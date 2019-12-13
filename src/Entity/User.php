@@ -3,11 +3,17 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints\Type;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
-class User
+//User must implement UserInterface
+class User implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -40,6 +46,8 @@ class User
      * @ORM\Column(type="date")
      */
     private $birthdate;
+
+    private $roles = [];
 
     public function getId(): ?int
     {
@@ -104,5 +112,46 @@ class User
         $this->birthdate = $birthdate;
 
         return $this;
+    }
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function getUsername():string
+    {
+        $username = $this->email;
+
+        return $username;
+    }
+
+    public function getSalt()
+    {
+        return null;
+    }
+
+    public function eraseCredentials()
+    {
+        return null;
+    }
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('firstname', new NotBlank());
+        $metadata->addPropertyConstraint('lastname', new NotBlank());
+
+        $metadata->addPropertyConstraint('email', new Email());
+        $metadata->addPropertyConstraint('email', new NotBlank());
+        
+        $metadata->addPropertyConstraint('password', new NotBlank());
+
+        $metadata->addPropertyConstraint('birthdate', new NotBlank());
+        $metadata->addPropertyConstraint('birthdate', new Type(\DateTime::class));
     }
 }
