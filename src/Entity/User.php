@@ -144,6 +144,11 @@ class User implements UserInterface
         return null;
     }
 
+    public function getPicture(){
+        $gravatar = "https://www.gravatar.com/avatar/".md5($this->email);
+        return $gravatar;
+    }
+
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('firstname', new NotBlank());

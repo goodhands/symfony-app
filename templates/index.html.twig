@@ -3,11 +3,29 @@
 {% block title %}Register | Manasoft!{% endblock %}
 
 {% block body %}
-    <h2 class="form-signin-heading">Welcome, please register below</h2>
-    {{ form(form) }}
-    <div class="form-group button group">
-        <a href="{{ path('app_login') }}">
-            Already have an account? Login here
-        </a>
-    </div>
+
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        <h2 class="form-signin-heading">Welcome to your profile {{app.user.firstname}}, please see your profile below</h2>
+
+        <div class="jumbotron">
+            <ul class="list-group">
+                <li class="list-item">Firstname: {{app.user.firstname}}</li>
+                <li class="list-item">Lastname: {{app.user.lastname}}</li>
+                <li class="list-item">Email: {{app.user.email}}</li>
+                <li class="list-item">Picture: <img src="{{app.user.picture}}"/></li>
+            </ul>
+        </div>
+
+        <div class="mb-3">
+            <a href="{{ path('app_logout') }}" class="btn btn-md btn-warning pulled-right">Logout</a>
+        </div>
+    {% else %}
+        <div class="jumbotron">
+            <h2 class="form-signin-heading">Welcome to Manasoft!</h2>
+            <div class="mb-3">
+                <a href="{{ path('user.register') }}" class="btn btn-md btn-primary">Register</a>
+                <a href="{{ path('app_login') }}" class="btn btn-md btn-default">Login</a>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}
