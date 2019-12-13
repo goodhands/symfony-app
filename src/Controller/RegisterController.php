@@ -31,7 +31,7 @@ class RegisterController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $user->setPassword( 
-                $this->passwordEncoder->encodePassword( $user, "samiel" )
+                $this->passwordEncoder->encodePassword( $user, $user->getPassword() )
             );
 
             $user = $form->getData();
@@ -40,7 +40,7 @@ class RegisterController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            return $this->redirectToRoute('dashboard');
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('register.html.twig', [
